@@ -1,0 +1,97 @@
+name: wa-monitor
+region: fra
+services:
+  - name: api
+    git:
+      repo_clone_url: https://github.com/StonerStyle/wa-track_0.1.git
+      branch: main
+      deploy_on_push: true
+    env: NODE_JS
+    build_command: |
+      cd apps/api && npm ci && npm run build
+    run_command: |
+      node dist/index.js
+    http_port: 3000
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    routes:
+      - path: /
+      - path: /dashboard
+      - path: /api
+    health_check:
+      http_path: /healthz
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 3
+      success_threshold: 1
+      failure_threshold: 3
+    envs:
+      # Supabase
+      - key: SUPABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: https://leoxpzxmzspvddnvywrw.supabase.co
+      - key: SUPABASE_SERVICE_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: ${SUPABASE_SERVICE_KEY}
+      # Auth
+      - key: GOOGLE_CLIENT_ID
+        value: ${GOOGLE_CLIENT_ID}
+        type: SECRET
+      - key: GOOGLE_CLIENT_SECRET
+        value: ${GOOGLE_CLIENT_SECRET}
+        type: SECRET
+      - key: JWT_SECRET
+        value: ${JWT_SECRET}
+        type: SECRET
+      # App
+      - key: NODE_ENV
+        value: production
+      - key: SIGNED_URL_TTL_DAYS
+        value: "7"
+      - key: LOG_LEVEL
+        value: info
+      # CORS origin (will be set to actual domain after deployment)
+      - key: APP_ORIGIN
+        value: ${APP_ORIGIN}
+
+  - name: worker
+    git:
+      repo_clone_url: https://github.com/StonerStyle/wa-track_0.1.git
+      branch: main
+      deploy_on_push: true
+    env: NODE_JS
+    build_command: |
+      cd apps/worker && npm ci && npm run build
+    run_command: |
+      node dist/index.js
+    http_port: 3001
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    health_check:
+      http_path: /healthz
+      initial_delay_seconds: 15
+      period_seconds: 10
+      timeout_seconds: 3
+      success_threshold: 1
+      failure_threshold: 3
+    envs:
+      - key: SUPABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: https://leoxpzxmzspvddnvywrw.supabase.co
+      - key: SUPABASE_SERVICE_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        value: ${SUPABASE_SERVICE_KEY}
+      - key: NODE_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: info
+      - key: WORKER_POLL_MS
+        value: "2000"
+      - key: WORKER_MAX_MEDIA_MB
+        value: "25"
+      - key: WORKER_BACKOFF_BASE_MS
+        value: "1000"
+      - key: WORKER_BACKOFF_MAX_MS
+        value: "30000"
