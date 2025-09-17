@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WA Monitor - Login</title>
+    <link rel="stylesheet" href="../assets/css/design3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <h1>WA Monitor</h1>
+            <p>Please sign in to continue</p>
+            <button id="btn-login-google" class="btn btn-primary">
+                <i class="fab fa-google"></i> Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('btn-login-google').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/auth/dev-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    alert('Login failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

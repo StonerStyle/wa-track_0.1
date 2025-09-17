@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WA Monitor - Design 3 (MVP Dashboard)</title>
+    <link rel="stylesheet" href="../assets/css/design3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <h1 id="hdr-title" class="header-title">WA Monitor</h1>
+            <div class="header-actions">
+                <button id="btn-logout-google" class="btn btn-secondary">Logout Google</button>
+                <button id="btn-wa-disconnect" class="btn btn-secondary">Disconnect WhatsApp</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        <div class="grid">
+            <!-- Left Column (66%) -->
+            <div class="left-column">
+                <!-- A) Connection Status -->
+                <section class="section">
+                    <div id="status-cards" class="status-cards">
+                        <!-- Google Card -->
+                        <div id="card-google" class="card">
+                            <div class="card-header">
+                                <div class="card-icon google"><i class="fab fa-google"></i></div>
+                                <span class="card-title">Google</span>
+                            </div>
+                            <div class="card-body">
+                                <div id="google-state-badge" class="badge badge-disconnected">disconnected</div>
+                                <div id="google-content" class="google-content">
+                                    <div class="not-signed-in">
+                                        <span>Not signed in</span>
+                                    </div>
+                                    <div class="google-connected" style="display: none;">
+                                        <img id="google-avatar" src="" alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid #E5E7EB;">
+                                        <span id="google-email"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WhatsApp Card with integrated QR -->
+                        <div id="card-whatsapp" class="card">
+                            <div class="card-header">
+                                <div class="card-icon whatsapp"><i class="fab fa-whatsapp"></i></div>
+                                <span class="card-title">WhatsApp</span>
+                            </div>
+                            <div class="card-body">
+                                <div id="wa-state-badge" class="badge badge-disconnected">disconnected</div>
+                                <div id="wa-content" class="wa-content">
+                                    <!-- Disconnected/Connecting state: Show QR -->
+                                    <div id="wa-qr-section" class="wa-qr-section">
+                                        <div class="qr-container">
+                                            <canvas id="qr-canvas" width="240" height="240"></canvas>
+                                            <button id="btn-refresh-qr" class="btn-refresh"><i class="fas fa-sync-alt"></i></button>
+                                        </div>
+                                        <div id="qr-expires" class="qr-expires">Expires in 30s</div>
+                                    </div>
+                                    
+                                    <!-- Connected state: Show profile -->
+                                    <div id="wa-profile-section" class="wa-profile-section" style="display: none;">
+                                        <div class="wa-connected">
+                                            <img id="wa-avatar" src="" alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid #E5E7EB;">
+                                            <div class="wa-profile-info">
+                                                <div id="wa-name" class="wa-name"></div>
+                                                <div id="wa-number" class="wa-number"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- B) Groups -->
+                <section class="section">
+                    <div id="panel-groups" class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Groups</h2>
+                            <div class="card-controls">
+                                <input id="groups-search" type="text" placeholder="Search by name or id..." class="search-input">
+                                <button id="btn-fetch-groups" class="btn btn-primary"><i class="fas fa-sync-alt"></i> Fetch new groups</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table id="groups-table" class="groups-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Group ID</th>
+                                            <th>Monitor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Groups will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="pagination">
+                                <button id="groups-prev" class="btn btn-secondary">Prev</button>
+                                <span id="groups-page" class="page-info">Page 1</span>
+                                <button id="groups-next" class="btn btn-secondary">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column (34%) -->
+            <div class="right-column">
+                <!-- C) System Activity -->
+                <section class="section">
+                    <div id="panel-activity" class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">System Activity</h2>
+                            <button id="btn-clear-activity" class="btn btn-secondary"><i class="fas fa-trash"></i> Clear</button>
+                        </div>
+                        <div class="card-body">
+                            <div id="activity-list" class="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-icon success"><i class="fas fa-check"></i></div>
+                                    <div class="activity-content">
+                                        <div class="activity-time">2025-09-16 03:12</div>
+                                        <div class="activity-message">Discovery triggered</div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon success"><i class="fas fa-check"></i></div>
+                                    <div class="activity-content">
+                                        <div class="activity-time">2025-09-16 03:10</div>
+                                        <div class="activity-message">Reconnected WhatsApp</div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon error"><i class="fas fa-times"></i></div>
+                                    <div class="activity-content">
+                                        <div class="activity-time">2025-09-16 03:00</div>
+                                        <div class="activity-message">Error: media upload failed</div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon info"><i class="fas fa-info"></i></div>
+                                    <div class="activity-content">
+                                        <div class="activity-time">2025-09-16 02:45</div>
+                                        <div class="activity-message">Group monitoring enabled</div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon success"><i class="fas fa-check"></i></div>
+                                    <div class="activity-content">
+                                        <div class="activity-time">2025-09-16 02:30</div>
+                                        <div class="activity-message">System initialized</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- D) Message Log -->
+                <section class="section">
+                    <div id="panel-messages" class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Message Log</h2>
+                            <div class="card-filters">
+                                <select id="msg-filter-group" class="filter-select">
+                                    <option value="">All Groups</option>
+                                </select>
+                                <select id="msg-filter-kind" class="filter-select">
+                                    <option value="">All</option>
+                                    <option value="text">text</option>
+                                    <option value="image">image</option>
+                                    <option value="video">video</option>
+                                    <option value="audio">audio</option>
+                                    <option value="doc">doc</option>
+                                    <option value="other">other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="messages-list" class="messages-list">
+                                <!-- Messages will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <span class="version">v0.1.0</span>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toaster" class="toaster"></div>
+
+    <script src="../assets/js/design3-api.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WA Monitor - Design 2 (MVP)</title>
+    <link rel="stylesheet" href="../../assets/css/design2.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <h1 id="hdr-title" class="header-title">WA Monitor</h1>
+            <div class="header-actions">
+                <button id="btn-logout-google" class="btn btn-secondary">Logout Google</button>
+                <button id="btn-wa-disconnect" class="btn btn-secondary">Disconnect WhatsApp</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        <div class="grid">
+            <!-- Left Column (66%) -->
+            <div class="left-column">
+                <!-- A) Connection Status -->
+                <section class="section">
+                    <div id="status-cards" class="status-cards">
+                        <!-- Google Card -->
+                        <div id="card-google" class="card">
+                            <div class="card-header">
+                                <div class="card-icon">G</div>
+                                <span class="card-title">Google</span>
+                            </div>
+                            <div class="card-body">
+                                <div id="google-state-badge" class="badge badge-disconnected">disconnected</div>
+                                <div id="google-content" class="google-content">
+                                    <div class="not-signed-in">
+                                        <span>Not signed in</span>
+                                        <button id="btn-login-google" class="btn btn-primary">Sign in</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WhatsApp Card -->
+                        <div id="card-whatsapp" class="card">
+                            <div class="card-header">
+                                <div class="card-icon">WA</div>
+                                <span class="card-title">WhatsApp</span>
+                            </div>
+                            <div class="card-body">
+                                <div id="wa-state-badge" class="badge badge-disconnected">disconnected</div>
+                                <div id="wa-content" class="wa-content">
+                                    <div class="helper-text">Use QR panel to connect.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- B) Groups Table -->
+                <section class="section">
+                    <div id="panel-groups" class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Groups</h2>
+                            <div class="card-controls">
+                                <input id="groups-search" type="text" placeholder="Search by name or id..." class="search-input">
+                                <button id="btn-fetch-groups" class="btn btn-primary">Fetch new groups</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table id="groups-table" class="groups-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Group ID</th>
+                                            <th>Monitor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Groups will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="pagination">
+                                <button id="groups-prev" class="btn btn-secondary">Prev</button>
+                                <span id="groups-page" class="page-info">Page 1</span>
+                                <button id="groups-next" class="btn btn-secondary">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column (34%) -->
+            <div class="right-column">
+                <!-- C) QR Scan -->
+                <section class="section">
+                    <div id="panel-qr" class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">QR Scan</h2>
+                            <button id="btn-open-qr" class="btn btn-primary">Open QR</button>
+                        </div>
+                        <div class="card-body">
+                            <div id="qr-content" class="qr-content">
+                                <div class="qr-placeholder">
+                                    <canvas id="qr-canvas" width="240" height="240"></canvas>
+                                    <div id="qr-expires" class="qr-expires">Expires in 30s</div>
+                                    <button id="btn-refresh-qr" class="btn-refresh">↻</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- D) Message Log -->
+                <section class="section">
+                    <div id="panel-messages" class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Message Log</h2>
+                            <div class="card-filters">
+                                <select id="msg-filter-group" class="filter-select">
+                                    <option value="">All Groups</option>
+                                </select>
+                                <select id="msg-filter-kind" class="filter-select">
+                                    <option value="">All</option>
+                                    <option value="text">text</option>
+                                    <option value="image">image</option>
+                                    <option value="video">video</option>
+                                    <option value="audio">audio</option>
+                                    <option value="doc">doc</option>
+                                    <option value="other">other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="messages-list" class="messages-list">
+                                <!-- Messages will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toaster" class="toaster"></div>
+
+    <script src="../../assets/js/design2.js"></script>
+</body>
+</html>
