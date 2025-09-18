@@ -1,83 +1,63 @@
 import { AuthenticationState, SignalDataTypeMap } from '@whiskeysockets/baileys';
-import { supabase, updateWaSession, logAudit } from '../supa.js';
-import { logger } from '../log.js';
+import { supabase } from '../supa';
+import { logger } from '../log';
 
-export class SupabaseAuthState {
-  private creds: SignalDataTypeMap['creds'] | undefined;
-  private keys: SignalDataTypeMap['keys'] | undefined;
-
-  constructor() {
-    this.creds = undefined;
-    this.keys = undefined;
-  }
-
-  async load(): Promise<{ state: AuthenticationState; saveCreds: () => Promise<void> }> {
+export class SupabaseStateStore {
+  async getState(): Promise<AuthenticationState> {
     try {
-      // Load from Supabase
-      const { data: session, error } = await supabase
+      const { data, error } = await supabase
         .from('wa_sessions')
-        .select('creds_json, keys_json')
+        .select('auth_state')
         .limit(1)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        throw new Error(`Failed to load auth state: ${error.message}`);
+      if (error) {
+        logger.error('Failed to get auth state:', error);
+        return { creds: {} as any, keys: {} as any };
       }
 
-      if (session) {
-        this.creds = session.creds_json;
-        this.keys = session.keys_json;
-      }
-
-      logger.info('Loaded auth state from Supabase');
-
-      return {
-        state: {
-          creds: this.creds,
-          keys: this.keys
-        },
-        saveCreds: this.saveCreds.bind(this)
-      };
+      return data?.auth_state || { creds: {} as any, keys: {} as any };
     } catch (error) {
-      logger.error('Failed to load auth state:', error);
-      throw error;
+      logger.error('Error getting auth state:', error);
+      return { creds: {} as any, keys: {} as any };
     }
   }
 
-  private async saveCreds(): Promise<void> {
+  async saveState(state: AuthenticationState): Promise<void> {
     try {
-      await updateWaSession({
-        creds_json: this.creds,
-        keys_json: this.keys
-      });
+      const { error } = await supabase
+        .from('wa_sessions')
+        .upsert({ auth_state: state });
 
-      logger.debug('Saved auth state to Supabase');
+      if (error) {
+        logger.error('Failed to save auth state:', error);
+        throw error;
+      }
     } catch (error) {
-      logger.error('Failed to save auth state:', error);
+      logger.error('Error saving auth state:', error);
       throw error;
     }
   }
 
-  async saveCreds(creds: SignalDataTypeMap['creds']): Promise<void> {
-    this.creds = creds;
-    await this.saveCreds();
+  async getCreds(): Promise<any> {
+    const state = await this.getState();
+    return state.creds || {};
   }
 
-  async saveKeys(keys: SignalDataTypeMap['keys']): Promise<void> {
-    this.keys = keys;
-    await this.saveCreds();
+  async saveCreds(creds: any): Promise<void> {
+    const state = await this.getState();
+    state.creds = creds;
+    await this.saveState(state);
   }
 
-  async clear(): Promise<void> {
-    this.creds = undefined;
-    this.keys = undefined;
-    
-    await updateWaSession({
-      creds_json: null,
-      keys_json: null
-    });
+  async getKeys(): Promise<any> {
+    const state = await this.getState();
+    return state.keys || {};
+  }
 
-    await logAudit('auth_cleared', {});
-    logger.info('Cleared auth state');
+  async saveKeys(keys: any): Promise<void> {
+    const state = await this.getState();
+    state.keys = keys;
+    await this.saveState(state);
   }
 }
