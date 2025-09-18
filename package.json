@@ -1,0 +1,16 @@
+{
+  "name": "wa-track",
+  "version": "1.0.0",
+  "description": "WA Monitor - WhatsApp Monitoring System",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "echo 'Building all services...'",
+    "start": "echo 'Use individual service start scripts'"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
