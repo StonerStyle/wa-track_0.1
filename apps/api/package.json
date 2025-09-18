@@ -2,15 +2,16 @@
   "name": "wa-monitor-api",
   "version": "1.0.0",
   "description": "WA Monitor API Service",
-  "main": "dist/index.js",
+  "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/server.js",
     "dev": "tsx src/index.ts",
     "server": "tsx src/server.ts",
     "test": "jest"
   },
   "dependencies": {
+    "@hapi/boom": "^10.0.1",
     "@supabase/supabase-js": "^2.38.4",
     "@types/jsonwebtoken": "^9.0.10",
     "cookie-parser": "^1.4.6",

@@ -10,6 +10,7 @@
     "worker": "tsx src/index.ts"
   },
   "dependencies": {
+    "@hapi/boom": "^10.0.1",
     "@supabase/supabase-js": "^2.39.0",
     "@whiskeysockets/baileys": "^6.6.0",
     "dotenv": "^16.3.1",
