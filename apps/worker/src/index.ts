@@ -41,8 +41,9 @@ async function start() {
     logger.info('WhatsApp client started');
     
     // Start HTTP server
-    app.listen(env.PORT, '0.0.0.0', () => {
-      logger.info(`Worker HTTP server listening on port ${env.PORT}`);
+    const port = process.env.PORT || env.PORT;
+    app.listen(port, '0.0.0.0', () => {
+      logger.info(`Worker HTTP server listening on port ${port}`);
     });
     
     logger.info('WA Monitor Worker started successfully');

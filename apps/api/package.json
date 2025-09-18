@@ -11,7 +11,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@hapi/boom": "^10.0.1",
     "@supabase/supabase-js": "^2.38.4",
     "@types/jsonwebtoken": "^9.0.10",
     "cookie-parser": "^1.4.6",
